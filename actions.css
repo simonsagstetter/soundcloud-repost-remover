@@ -1,0 +1,44 @@
+#sce-toast {
+  display: flex;
+  flex-direction: column;
+  flex-flow: column;
+  justify-content: center;
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  min-height: 44px;
+  width: 300px;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0,0,0,.2), inset 0 0 2px #fff;
+  z-index: 500;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: .4s ease-in-out;
+}
+
+#sce-toast > small {
+  color: #999;
+  font-size: 10px;
+  padding: 0 1rem;
+  font-weight: lighter;
+}
+
+#sce-toast > span {
+  color: #333;
+  width: auto;
+  height: auto;
+  display: block;
+  position: relative;
+  padding: 0 1rem;
+  font-size: 13px;
+}
+
+#sce-toast > span > .sce-counter {
+  color: #f50;
+  font-weight: 500;
+  display: inline;
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Soundcloud Repost Remover",
+  "version": "0.0.0.1",
+  "description": "Filter your soundcloud stream",
+  "permissions": [
+	"storage",
+	"activeTab",
+	"notifications",
+    "http://*/",
+    "https://*/",
+	"tabs",
+	"webNavigation",
+	"declarativeContent"
+  ],
+  "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+  },
+  "content_scripts": [
+   {
+     "matches": ["https://soundcloud.com/*"],
+     "js": [ "actions.js"],
+     "css": ["actions.css"],
+     "run_at": "document_end",
+     "all_frames": false
+   }
+ ],
+  "page_action": {
+      "default_popup": "popup.html",
+	  "default_icon": {
+        "16": "images/sc_16.png",
+        "32": "images/sc_32.png",
+        "48": "images/sc_48.png",
+        "128": "images/sc_128.png"
+      }
+    },
+  "icons": {
+      "16": "images/sc_16.png",
+       "32": "images/sc_32.png",
+       "48": "images/sc_48.png",
+       "128": "images/sc_128.png"
+    },
+  "manifest_version": 2
+}
