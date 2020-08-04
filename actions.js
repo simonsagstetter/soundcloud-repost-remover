@@ -2,6 +2,7 @@ var actionsActive;
 var isPosts;
 var isReposts;
 var toastShown;
+var isActive;
 
 var rootObserver = new MutationObserver( function( mutations, me ) {
 		var content = document.getElementById("content");
@@ -49,7 +50,6 @@ function init( content ) {
 	});
 
 	function handleCanvas( sounds, soundsList, lContent ) {
-		var isActive;
 
 		chrome.storage.sync.get( ['isActive'], function( result ) {
 			isActive = result.isActive;
@@ -66,6 +66,9 @@ function init( content ) {
 					removeReposts( sounds );
 					removeRepostsOnScroll( soundsList );
 				});
+			}
+			else {
+				showToast();
 			}
 		});
 	};
@@ -262,8 +265,12 @@ function init( content ) {
 
 	function showToast() {
 		clearTimeout( timer );
+		let msg = "inactive";
+		if ( isActive ) {
+			msg = "active";
+		}
 		let toast = document.getElementById( "sce-toast" );
-		toast.childNodes[1].innerHTML = "Extension is <div class='sce-counter'>active</div>";
+		toast.childNodes[1].innerHTML = "Extension is <div class='sce-counter'>" + msg +"</div>";
 		toast.style.opacity = 1;
 		toast.style.transform = "scaleY(1)";
 		toast.style.top = "60px";
