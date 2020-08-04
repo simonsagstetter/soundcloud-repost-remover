@@ -1,4 +1,7 @@
 var actionsActive;
+var isPosts;
+var isReposts;
+var toastShown;
 
 var rootObserver = new MutationObserver( function( mutations, me ) {
 		var content = document.getElementById("content");
@@ -7,7 +10,6 @@ var rootObserver = new MutationObserver( function( mutations, me ) {
 				content.addEventListener( "DOMSubtreeModified", function() {
 					if ( window.location.pathname == "/stream" ) {
 						if(! actionsActive ) {
-							console.log( "Path is /stream." );
 							actionsActive = true;
 							init( content );
 						}
@@ -32,10 +34,10 @@ function init( content ) {
 	var observer = new MutationObserver( function ( mutations, me ) {
 		var sounds = document.getElementsByClassName( "soundList__item" );
 		var soundsList = document.getElementsByClassName( "lazyLoadingList__list" );
-		if ( sounds.length > 0 && soundsList.length > 0 ) {
-			console.log( "DOM Elements available." );
+		var lContent = document.getElementsByClassName( "l-content" );
+		if ( sounds.length > 0 && soundsList.length > 0 && lContent.length > 0) {
 			insertToast();
-			handleCanvas( sounds, soundsList[0] );
+			handleCanvas( sounds, soundsList[0], lContent );
 			me.disconnect();
 			return;
 		}
@@ -46,48 +48,202 @@ function init( content ) {
 		subtree: true
 	});
 
-	function handleCanvas( sounds, soundsList ) {
+	function handleCanvas( sounds, soundsList, lContent ) {
 		var isActive;
 
 		chrome.storage.sync.get( ['isActive'], function( result ) {
 			isActive = result.isActive;
 			if ( isActive ) {
-				removeReposts( sounds );
-				removeRepostsOnScroll( soundsList );
-				console.log( "Soundcloud Repost Remover is active." );
-			}
-			else {
-				console.log( "Soundcloud Repost Remover not activated yet." );
+				chrome.storage.sync.get( ['isPosts'], function( result ) {
+					isPosts = result.isPosts;
+					if ( isPosts ) {
+						isReposts = false;
+					}
+					else {
+						isReposts = true;
+					}
+					insertTabBar( lContent );
+					removeReposts( sounds );
+					removeRepostsOnScroll( soundsList );
+				});
 			}
 		});
 	};
 
-	function removeReposts( sounds ) {
-				for ( var i = 0; i < sounds.length; i++ ) {
-					try {
-						if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
-							sounds[i].remove();
-						}
+	function toggleTab(e) {
+		let tabs = document.getElementsByClassName( "sce-tab" );
+		let target = e.currentTarget;
+
+		if( target.dataset["id"] == "reposts" ) {
+			chrome.storage.sync.set( { isPosts: false, isReposts: true }, function() {
+				isPosts = false;
+				isReposts = true;
+				switchClasses( tabs, "reposts" );
+
+			});
+		}
+		else {
+			chrome.storage.sync.set( { isPosts: true, isReposts: false }, function() {
+				isPosts = true;
+				isReposts = false;
+				switchClasses( tabs, "posts" );
+			});
+		}
+
+	};
+
+	function switchClasses( tabs, tabId ) {
+		let sounds = document.getElementsByClassName("soundList__item");
+		if ( tabId == "reposts" ) {
+			tabs[0].setAttribute( "class", "sce-tab" );
+			tabs[1].setAttribute( "class", "sce-tab sce-tab-active" );
+		}
+		else {
+			tabs[0].setAttribute( "class", "sce-tab sce-tab-active" );
+			tabs[1].setAttribute( "class", "sce-tab" );
+		}
+
+		if( isPosts ) {
+			for ( var i = 0; i < sounds.length; i++ ) {
+				try {
+					if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+						sounds[i].style.display = "none";
 					}
-					catch ( e ) {
+					else {
+						sounds[i].style.display = "block";
 					}
 				}
+				catch ( e ) {
+					sounds[i].style.display = "block";
+				}
+			}
+		}
+		else {
+			for ( var i = 0; i < sounds.length; i++ ) {
+				try {
+					if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+						sounds[i].style.display = "block";
+					}
+					else {
+						sounds[i].style.display = "none";
+					}
+				}
+				catch ( e ) {
+					sounds[i].style.display = "none";
+				}
+			}
+		}
+		window.scrollTo(0,0);
+	};
+
+	function removeReposts( sounds ) {
+		let postCounter = 0;
+		let repostCounter = 0;
+			for ( let i = 0; i < sounds.length; i++ ) {
+					if ( isPosts ) {
+						try {
+							if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+								sounds[i].style.display = "none";
+								repostCounter++;
+							}
+						}
+						catch ( e ) {
+							sounds[i].style.display = "block";
+						}
+					}
+					else {
+						try {
+							if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+								sounds[i].style.display = "block";
+								repostCounter++;
+							}
+						}
+						catch ( e ) {
+							sounds[i].style.display = "none";
+						}
+					}
+			}
+			let tabs = document.getElementsByClassName( "sce-tab" );
+			tabs[0].children[0].innerHTML = postCounter;
+			tabs[1].children[0].innerHTML=  repostCounter;
+			if (! toastShown ) {
+				toastShown = true;
+				showToast();
+			}
 	};
 
 	function removeRepostsOnScroll( soundsList ) {
 		soundsList.addEventListener( "DOMNodeInserted", function ( event ) {
 		let newSounds = document.getElementsByClassName( "soundList__item" );
-			for ( var i = 0; i < newSounds.length; i++ ) {
-				try {
-					if( newSounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
-						newSounds[i].remove();
+		let postCounter = 0;
+		let repostCounter = 0;
+		for ( var i = 0; i < newSounds.length; i++ ) {
+				if ( isPosts ) {
+					try {
+						if( newSounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+							newSounds[i].style.display = "none";
+							repostCounter++;
+						}
+					}
+					catch ( e ) {
+						newSounds[i].style.display = "block";
+						postCounter++;
 					}
 				}
-				catch ( e ) {
+				else {
+					try {
+						if( newSounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+							newSounds[i].style.display = "block";
+							repostCounter++;
+						}
+					}
+					catch ( e ) {
+						newSounds[i].style.display = "none";
+						postCounter++;
+					}
 				}
-			}
-			showToast( newSounds.length );
+		}
+			let tabs = document.getElementsByClassName( "sce-tab" );
+			tabs[0].children[0].innerHTML = postCounter;
+			tabs[1].children[0].innerHTML=  repostCounter;
 		}, false);
+	};
+
+	function insertTabBar( lContent ) {
+
+		if ( document.getElementsByClassName("sce-tab-bar-container").length < 1 ) {
+			let div1 = document.createElement("div");
+			div1.setAttribute( "class", "sce-tab-bar-container" );
+			let div2 = document.createElement("div");
+			div2.setAttribute( "class", "sce-tab-bar" );
+			div1.appendChild( div2 );
+			let ul = document.createElement("ul");
+			ul.setAttribute( "class", "sce-tabs" );
+			div2.appendChild( ul );
+			let li1 = document.createElement("li");
+			li1.innerHTML = "Posts ";
+			li1.setAttribute(["data-id"], "posts");
+			li1.addEventListener( "click", function(e) { toggleTab(e); } );
+			let li2 = document.createElement("li");
+			li2.innerHTML = "Reposts ";
+			li2.setAttribute(["data-id"], "reposts");
+			li2.addEventListener( "click", function(e) { toggleTab(e); } );
+			if ( isPosts ) {
+				li1.setAttribute( "class", "sce-tab sce-tab-active" );
+				li2.setAttribute( "class", "sce-tab" );
+			}
+			else {
+				li1.setAttribute( "class", "sce-tab" );
+				li2.setAttribute( "class", "sce-tab sce-tab-active" );
+			}
+			let span1 = document.createElement("span");
+			li1.appendChild( span1 );
+			let span2 = document.createElement("span");
+			li2.appendChild( span2 );
+			ul.appendChild( li1 );
+			ul.appendChild( li2 );
+			lContent[1].insertBefore( div1, lContent[1].children[0] );
+		}
 	};
 
 	function insertToast() {
@@ -104,10 +260,10 @@ function init( content ) {
 		}
 	};
 
-	function showToast( length ) {
+	function showToast() {
 		clearTimeout( timer );
 		let toast = document.getElementById( "sce-toast" );
-		toast.childNodes[1].innerHTML = "Removed <div class='sce-counter'>" + length + "</div> reposts from the stream.";
+		toast.childNodes[1].innerHTML = "Extension is <div class='sce-counter'>active</div>";
 		toast.style.opacity = 1;
 		toast.style.transform = "scaleY(1)";
 		toast.style.top = "60px";

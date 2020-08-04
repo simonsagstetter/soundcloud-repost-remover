@@ -2,7 +2,7 @@
 
 	  chrome.runtime.onInstalled.addListener(function() {
 
-			chrome.storage.sync.set( { isActive: false }, function() {
+			chrome.storage.sync.set( { isActive: false, isPosts: true, isReposts: false }, function() {
 				console.log("Storage initiated.");
 			});
 

@@ -42,3 +42,71 @@
   font-weight: 500;
   display: inline;
 }
+
+.sce-tab-bar-container {
+  position: sticky;
+  display: block;
+  top: 46px;
+  width: 100%;
+  border-radius: 1px;
+  box-sizing: border-box;
+  z-index: 102;
+  background-color: white;
+  padding: 2rem 0 1rem 0;
+}
+
+.sce-tab-bar-container > .sce-tab-bar {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-right: auto;
+}
+
+.sce-tab-bar-container > .sce-tab-bar > ul.sce-tabs {
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  border-bottom: 1px solid rgb(242,242,242);
+}
+
+.sce-tab-bar-container > .sce-tab-bar > ul.sce-tabs > li.sce-tab {
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 400;
+  color: #333;
+  border-bottom: 1px solid transparent;
+  box-shadow: 0 0 black;
+  padding: 0 2rem 0.5rem 0;
+  margin-right: 1rem;
+  font-family: 'Interstate';
+  transition: 0.5s ease-in-out;
+  cursor: pointer;
+}
+
+.sce-tab-bar-container > .sce-tab-bar > ul.sce-tabs > li.sce-tab > span {
+  display: inline-block;
+  font-size: 16px;
+  position: absolute;
+  top: 6px;
+  margin-left: 0.5rem;
+  color: #f50;
+}
+
+.sce-tab-bar-container > .sce-tab-bar > ul.sce-tabs > li.sce-tab:hover {
+border-bottom: 1px solid #333;
+}
+
+.sce-tab-active {
+  color: #f50 !important;
+  border-bottom: 1px solid #f50 !important;
+}
+
+.sce-tab-active > span {
+  color: #f50 !important;
+}
+
+.sce-tab-active:hover {
+  color: #f50 !important;
+  border-bottom: 1px solid #f50 !important;
+}
