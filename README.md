@@ -1,6 +1,15 @@
 # Soundcloud Repost Remover
-Chrome Extension which will, when activated, remove reposts from your stream automatically.
+A Chrome Extension which removes reposts from your stream automatically.
 
 ### How to install?
-Download the repository. Go to extensions and activate the developer mode. Then choose load unpacked and select the folder of this repository folder.
-Enjoy!
+* Download the repository
+* You will need a chromium based browser like google chrome, opera, brave or edge
+* Go to extensions and activate the developer mode
+* Choose load unpacked and select the repository folder which you downloaded before
+* Go to soundcloud.com
+* You will need to visit a soundcloud.com/* url to activate or deactivate the feature
+* Click the extensions icon in the navigation bar
+* Click activate
+* Enjoy!
+
+> Feel free to notify me about bugs and stuff :)
