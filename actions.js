@@ -34,8 +34,6 @@ function init( content ) {
 		var soundsList = document.getElementsByClassName( "lazyLoadingList__list" );
 		if ( sounds.length > 0 && soundsList.length > 0 ) {
 			console.log( "DOM Elements available." );
-			console.log( "Found " + sounds.length + " sound list items." );
-			console.log( "Found " + soundsList.length + " lazy loading list items." );
 			insertToast();
 			handleCanvas( sounds, soundsList[0] );
 			me.disconnect();
@@ -68,12 +66,11 @@ function init( content ) {
 				for ( var i = 0; i < sounds.length; i++ ) {
 					try {
 						if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
-							console.log( "Removing Repost: " + sounds[0].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[1].children[0].innerHTML );
 							sounds[i].remove();
 						}
-						else {}
 					}
-					catch ( e ) {}
+					catch ( e ) {
+					}
 				}
 	};
 
@@ -83,27 +80,28 @@ function init( content ) {
 			for ( var i = 0; i < newSounds.length; i++ ) {
 				try {
 					if( newSounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
-						console.log( "Removing Repost: " + newSounds[0].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[1].children[0].innerHTML );
 						newSounds[i].remove();
 					}
-					else {}
 				}
-				catch ( e ) {}
+				catch ( e ) {
+				}
 			}
 			showToast( newSounds.length );
 		}, false);
 	};
 
 	function insertToast() {
-		let div = document.createElement("div");
-		div.setAttribute( "id", "sce-toast" );
-		document.getElementsByTagName("body")[0].insertBefore(div, document.getElementsByTagName("body")[0].children[0]);
-		let small = document.createElement("small");
-		small.innerHTML = "Soundcloud Repost Remover";
-		div.appendChild(small);
-		let span = document.createElement("span");
-		span.innerHTML = "";
-		div.appendChild(span);
+		if (! document.getElementById("sce-toast") ) {
+			let div = document.createElement("div");
+			div.setAttribute( "id", "sce-toast" );
+			document.getElementsByTagName("body")[0].insertBefore(div, document.getElementsByTagName("body")[0].children[0]);
+			let small = document.createElement("small");
+			small.innerHTML = "Soundcloud Repost Remover";
+			div.appendChild(small);
+			let span = document.createElement("span");
+			span.innerHTML = "";
+			div.appendChild(span);
+		}
 	};
 
 	function showToast( length ) {
