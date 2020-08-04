@@ -1,6 +1,10 @@
 # Soundcloud Repost Remover
 A Chrome Extension which removes reposts from your stream automatically.
 
+![alt text][logo]
+
+[logo]: https://raw.githubusercontent.com/simonsagstetter/soundcloud-repost-remover/master/screenshot.png ""
+
 ### How to install?
 * Download the repository
 * You will need a chromium based browser like google chrome, opera, brave or edge
