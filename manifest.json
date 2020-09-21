@@ -1,6 +1,6 @@
 {
   "name": "Soundcloud Repost Remover",
-  "version": "0.0.1.2",
+  "version": "0.0.1.3",
   "description": "Filter your soundcloud stream",
   "permissions": [
 	"storage",

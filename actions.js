@@ -109,7 +109,6 @@ function init( content ) {
 		if( isPosts ) {
 			for ( let i = 0; i < sounds.length; i++ ) {
 				try {
-					console.log( sounds[i].getElementsByClassName( "soundContext__repost" ).length );
 					if( sounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 						sounds[i].style.display = "none";
 					}
@@ -118,14 +117,12 @@ function init( content ) {
 					}
 				}
 				catch ( e ) {
-					console.log( e );
 				}
 			}
 		}
 		else if (! isPosts ) {
 			for ( let i = 0; i < sounds.length; i++ ) {
 				try {
-					console.log( sounds[i].getElementsByClassName( "soundContext__repost" ).length );
 					if( sounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 						sounds[i].style.display = "block";
 					}
@@ -134,7 +131,6 @@ function init( content ) {
 					}
 				}
 				catch ( e ) {
-					console.log( e );
 				}
 			}
 		}
@@ -157,7 +153,6 @@ function init( content ) {
 							}
 						}
 						catch ( e ) {
-							console.log( e );
 						}
 					}
 					else {
@@ -172,7 +167,6 @@ function init( content ) {
 							}
 						}
 						catch ( e ) {
-							console.log( e );
 						}
 					}
 			}
@@ -203,7 +197,6 @@ function init( content ) {
 						}
 					}
 					catch ( e ) {
-						console.log( e );
 					}
 				}
 				else {
@@ -218,7 +211,6 @@ function init( content ) {
 						}
 					}
 					catch ( e ) {
-						console.log( e );
 					}
 				}
 		}
