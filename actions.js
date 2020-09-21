@@ -107,9 +107,10 @@ function init( content ) {
 		}
 
 		if( isPosts ) {
-			for ( var i = 0; i < sounds.length; i++ ) {
+			for ( let i = 0; i < sounds.length; i++ ) {
 				try {
-					if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+					console.log( sounds[i].getElementsByClassName( "soundContext__repost" ).length );
+					if( sounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 						sounds[i].style.display = "none";
 					}
 					else {
@@ -117,14 +118,15 @@ function init( content ) {
 					}
 				}
 				catch ( e ) {
-					sounds[i].style.display = "block";
+					console.log( e );
 				}
 			}
 		}
-		else {
-			for ( var i = 0; i < sounds.length; i++ ) {
+		else if (! isPosts ) {
+			for ( let i = 0; i < sounds.length; i++ ) {
 				try {
-					if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+					console.log( sounds[i].getElementsByClassName( "soundContext__repost" ).length );
+					if( sounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 						sounds[i].style.display = "block";
 					}
 					else {
@@ -132,7 +134,7 @@ function init( content ) {
 					}
 				}
 				catch ( e ) {
-					sounds[i].style.display = "none";
+					console.log( e );
 				}
 			}
 		}
@@ -145,24 +147,32 @@ function init( content ) {
 			for ( let i = 0; i < sounds.length; i++ ) {
 					if ( isPosts ) {
 						try {
-							if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+							if( sounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 								sounds[i].style.display = "none";
 								repostCounter++;
 							}
+							else {
+								sounds[i].style.display = "block";
+								postCounter++;
+							}
 						}
 						catch ( e ) {
-							sounds[i].style.display = "block";
+							console.log( e );
 						}
 					}
 					else {
 						try {
-							if( sounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+							if( sounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 								sounds[i].style.display = "block";
 								repostCounter++;
 							}
+							else {
+								sounds[i].style.display = "none";
+								postCounter++;
+							}
 						}
 						catch ( e ) {
-							sounds[i].style.display = "none";
+							console.log( e );
 						}
 					}
 			}
@@ -183,26 +193,32 @@ function init( content ) {
 		for ( var i = 0; i < newSounds.length; i++ ) {
 				if ( isPosts ) {
 					try {
-						if( newSounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+						if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
 							newSounds[i].style.display = "none";
 							repostCounter++;
 						}
+						else {
+							newSounds[i].style.display = "block";
+							postCounter++;
+						}
 					}
 					catch ( e ) {
-						newSounds[i].style.display = "block";
-						postCounter++;
+						console.log( e );
 					}
 				}
 				else {
 					try {
-						if( newSounds[i].children[0].children[0].children[0].children[1].children[2].classList.contains("soundContext__repost") ) {
+						if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0) {
 							newSounds[i].style.display = "block";
 							repostCounter++;
 						}
+						else {
+							newSounds[i].style.display = "none";
+							postCounter++;
+						}
 					}
 					catch ( e ) {
-						newSounds[i].style.display = "none";
-						postCounter++;
+						console.log( e );
 					}
 				}
 		}
