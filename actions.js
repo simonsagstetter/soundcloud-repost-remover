@@ -4,12 +4,12 @@ var isReposts;
 var toastShown;
 var isActive;
 
-var rootObserver = new MutationObserver( function( mutations, me ) {
+/*var rootObserver = new MutationObserver( function( mutations, me ) {
 		var content = document.getElementById("content");
 
 		if ( content ) {
 				content.addEventListener( "DOMSubtreeModified", function() {
-					if ( window.location.pathname == "/stream" ) {
+					if ( window.location.pathname == "/feed" ) {
 						if(! actionsActive ) {
 							actionsActive = true;
 							init( content );
@@ -28,7 +28,42 @@ var rootObserver = new MutationObserver( function( mutations, me ) {
 rootObserver.observe(document, {
 	childList: true,
 	subtree: true
+});*/
+
+var rootObserver = new MutationObserver( function( mutations, me ) {
+	loaded = false;
+
+	mutations.forEach(record=>{
+		if(record.target.className != null){
+			className = record.target.className;
+			if(className.includes("lazyLoadingList__list")){
+				loaded = true;
+			}
+		}
+	})
+
+	if ( loaded ) {
+		if ( window.location.pathname == "/feed" ) {
+			if(! actionsActive ) {
+				actionsActive = true;
+				init( content );
+			}
+		}
+		else {
+			actionsActive = false;
+		}
+
+		me.disconnect();
+		return;
+	};
 });
+
+rootObserver.observe(document.getElementById("content"), {
+childList: true,
+subtree: true,
+characterData: true
+});
+
 
 function init( content ) {
 	var timer;
@@ -180,45 +215,98 @@ function init( content ) {
 	};
 
 	function removeRepostsOnScroll( soundsList ) {
-		soundsList.addEventListener( "DOMNodeInserted", function ( event ) {
-		let newSounds = document.getElementsByClassName( "soundList__item" );
-		let postCounter = 0;
-		let repostCounter = 0;
-		for ( var i = 0; i < newSounds.length; i++ ) {
-				if ( isPosts ) {
-					try {
-						if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
-							newSounds[i].style.display = "none";
-							repostCounter++;
-						}
-						else {
-							newSounds[i].style.display = "block";
-							postCounter++;
-						}
+		var soundlistObserver = new MutationObserver(function(mutations,self){
+			mutations.forEach(record=>{
+				className = record.target.className;
+				if(className !== undefined && className !== null && className == "waveform__layer waveform__scene"){
+					console.log(record);
+					let newSounds = document.getElementsByClassName( "soundList__item" );
+					let postCounter = 0;
+					let repostCounter = 0;
+					for ( var i = 0; i < newSounds.length; i++ ) {
+							if ( isPosts ) {
+								try {
+									if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
+										newSounds[i].style.display = "none";
+										repostCounter++;
+									}
+									else {
+										newSounds[i].style.display = "block";
+										postCounter++;
+									}
+								}
+								catch ( e ) {
+								}
+							}
+							else {
+								try {
+									if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0) {
+										newSounds[i].style.display = "block";
+										repostCounter++;
+									}
+									else {
+										newSounds[i].style.display = "none";
+										postCounter++;
+									}
+								}
+								catch ( e ) {
+								}
+							}
 					}
-					catch ( e ) {
-					}
+						let tabs = document.getElementsByClassName( "sce-tab" );
+						tabs[0].children[0].innerHTML = postCounter;
+						tabs[1].children[0].innerHTML=  repostCounter;
 				}
-				else {
-					try {
-						if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0) {
-							newSounds[i].style.display = "block";
-							repostCounter++;
-						}
-						else {
-							newSounds[i].style.display = "none";
-							postCounter++;
-						}
-					}
-					catch ( e ) {
-					}
-				}
-		}
-			let tabs = document.getElementsByClassName( "sce-tab" );
-			tabs[0].children[0].innerHTML = postCounter;
-			tabs[1].children[0].innerHTML=  repostCounter;
-		}, false);
+			})
+		})
+
+		soundlistObserver.observe(soundsList,{
+			subtree: true,
+			childList: true,
+			characterData: true
+		})
 	};
+
+	// function removeRepostsOnScroll( soundsList ) {
+	// 	soundsList.addEventListener( "DOMNodeInserted", function ( event ) {
+	// 	let newSounds = document.getElementsByClassName( "soundList__item" );
+	// 	let postCounter = 0;
+	// 	let repostCounter = 0;
+	// 	for ( var i = 0; i < newSounds.length; i++ ) {
+	// 			if ( isPosts ) {
+	// 				try {
+	// 					if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0 ) {
+	// 						newSounds[i].style.display = "none";
+	// 						repostCounter++;
+	// 					}
+	// 					else {
+	// 						newSounds[i].style.display = "block";
+	// 						postCounter++;
+	// 					}
+	// 				}
+	// 				catch ( e ) {
+	// 				}
+	// 			}
+	// 			else {
+	// 				try {
+	// 					if( newSounds[i].getElementsByClassName( "soundContext__repost" ).length > 0) {
+	// 						newSounds[i].style.display = "block";
+	// 						repostCounter++;
+	// 					}
+	// 					else {
+	// 						newSounds[i].style.display = "none";
+	// 						postCounter++;
+	// 					}
+	// 				}
+	// 				catch ( e ) {
+	// 				}
+	// 			}
+	// 	}
+	// 		let tabs = document.getElementsByClassName( "sce-tab" );
+	// 		tabs[0].children[0].innerHTML = postCounter;
+	// 		tabs[1].children[0].innerHTML=  repostCounter;
+	// 	}, false);
+	// };
 
 	function insertTabBar( lContent ) {
 
